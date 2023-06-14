@@ -17,8 +17,8 @@
 #pragma once
 
 #ifdef AUDIO_ENABLE
-#    define STARTUP_SONG SONG(PLANCK_SOUND)
-// #define STARTUP_SONG SONG(NO_SOUND)
+//#    define STARTUP_SONG SONG(PLANCK_SOUND)
+ #define STARTUP_SONG SONG(NO_SOUND)
 
 #    define DEFAULT_LAYER_SONGS \
         { SONG(QWERTY_SOUND), SONG(COLEMAK_SOUND), SONG(DVORAK_SOUND) }
@@ -32,7 +32,7 @@
    - MIDI notes can be sent when in Music mode is on
 */
 
-#define MIDI_BASIC
+//#define MIDI_BASIC
 
 /* enable advanced MIDI features:
    - MIDI notes can be added to the keymap
@@ -46,4 +46,42 @@
 //#define MIDI_TONE_KEYCODE_OCTAVES 2
 
 // Most tactile encoders have detents every 4 stages
-#define ENCODER_RESOLUTION 4
+//#define ENCODER_RESOLUTION 4
+
+#define TAPPING_TERM 175
+
+//Unicode:
+#define UNICODE_SELECTED_MODES UNICODE_MODE_WINCOMPOSE
+
+//User static macro strings
+#include "macros.h"
+#ifndef MACRO_EML1
+#define MACRO_EML1 ""
+#endif
+#ifndef MACRO_EML2
+#define MACRO_EML2 ""
+#endif
+#ifndef MACRO_EML3
+#define MACRO_EML3 ""
+#endif
+#ifndef MACRO_EML4
+#define MACRO_EML4 ""
+#endif
+#ifndef MACRO_EML5
+#define MACRO_EML5 ""
+#endif
+#ifndef MACRO_SIG1
+#define MACRO_SIG1 ""
+#endif
+#ifndef MACRO_SIG2
+#define MACRO_SIG2 ""
+#endif
+#ifndef MACRO_SIG3
+#define MACRO_SIG3 ""
+#endif
+#ifndef MACRO_SIG4
+#define MACRO_SIG4 ""
+#endif
+#ifndef MACRO_SIG5
+#define MACRO_SIG5 ""
+#endif
