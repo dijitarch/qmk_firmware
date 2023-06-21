@@ -24,12 +24,12 @@ const keypos_t PROGMEM hand_swap_config[MATRIX_ROWS][MATRIX_COLS] = {
     {{5, 4}, {4, 4}, {3, 4}, {2, 4}, {1, 4}, {0, 4}},
     {{5, 5}, {4, 5}, {3, 5}, {2, 5}, {1, 5}, {0, 5}},
     {{5, 6}, {4, 6}, {3, 6}, {2, 6}, {1, 6}, {0, 6}},
-    {{4, 3}, {3, 3}, {2, 7}, {1, 7}, {0, 7}, {5, 3}},
+    {{4, 3}, {3, 3}, {2, 7}, {1, 3}, {0, 3}, {5, 7}},
     
     {{5, 0}, {4, 0}, {3, 0}, {2, 0}, {1, 0}, {0, 0}},
     {{5, 1}, {4, 1}, {3, 1}, {2, 1}, {1, 1}, {0, 1}},
     {{5, 2}, {4, 2}, {3, 2}, {2, 2}, {1, 2}, {0, 2}},
-    {{0, 3}, {1, 3}, {2, 3}, {3, 7}, {4, 7}, {5, 7}},
+    {{4, 7}, {3, 7}, {2, 3}, {1, 7}, {0, 7}, {5, 3}},
 };
 #endif
 
@@ -284,7 +284,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case D_RIGHT:
       if (record->event.pressed) {
       	if (os_state == ST_WINDOWS) {
-      		tap_code16(LCTL(LGUI(KC_LEFT)));
+      		tap_code16(LCTL(LGUI(KC_RGHT)));
       	} else if (os_state == ST_MAC) {
       		tap_code16(LCTL(KC_RGHT));
       	}
