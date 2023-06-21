@@ -19,6 +19,7 @@
 #ifdef AUDIO_ENABLE
 #    include "muse.h"
 #endif
+//correct swap hands mapping since the default is incorrect for the actual wiring of the planck ez
 #ifdef SWAP_HANDS_ENABLE
 const keypos_t PROGMEM hand_swap_config[MATRIX_ROWS][MATRIX_COLS] = {
     {{5, 4}, {4, 4}, {3, 4}, {2, 4}, {1, 4}, {0, 4}},
@@ -33,15 +34,6 @@ const keypos_t PROGMEM hand_swap_config[MATRIX_ROWS][MATRIX_COLS] = {
 };
 #endif
 
-/*enum planck_layers {
-  _QWERTY,
-  _COLEMAK,
-  _DVORAK,
-  _LOWER,
-  _RAISE,
-  _PLOVER,
-  _ADJUST
-};*/
 enum planck_layers {
 	_BASE,
 	_LOWER,
@@ -49,23 +41,16 @@ enum planck_layers {
 	_FN1,
 	_FN2,
 	_MACRO,
+	//reserved for future expansion
 	_SUPER //Always the highest layer
 };
 
-/*enum planck_keycodes {
-  QWERTY = SAFE_RANGE,
-  COLEMAK,
-  DVORAK,
-  PLOVER,
-  BACKLIT,
-  EXT_PLV
-};*/
 enum planck_keycodes {
 	D_LEFT = SAFE_RANGE, //D_ prefix for virtual desktop navigation and app switching
 	D_RIGHT,			 //these should change based on OS value (config on _SUPER)
 	D_ALL,
 	D_APP,
-	C_CMNT, //open comment
+	C_CMNT, //open comment for c-likes possibly configure in future to set language on _SUPER similar to OS settings
 	C_00,   //double 0
 	C_TNMC, //close comment
 	C_P00,  //double num pad 0
@@ -77,14 +62,14 @@ enum planck_keycodes {
 	C_MAC,
 	C_LINUX,
 	C_CLEAR,
-	P_CMNT,
+	P_CMNT, //P_ suffix for 'pair' symbol macros
 	P_PRN,
 	P_PRNN,
 	P_BRC,
 	P_BRCN,
 	P_ANGL,
 	P_ANGN,
-	M_SHRUG,
+	M_SHRUG, //M_ prefix for all other multi-character macros. 
 	M_TABLE,
 	M_EML1,
 	M_EML2,
@@ -122,7 +107,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_GRAVE,KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
     FN_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_BSPC,
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, FN2    ,
-    KC_LCTL, KC_MENU, KC_LALT, KC_LGUI, LOWER,   SPACE,   SPACE,   RAISE,   KC_RALT, MACRO,   KC_RGUI, KC_RCTL
+    KC_LCTL, KC_APP,  KC_LALT, KC_LGUI, LOWER,   SPACE,   SPACE,   RAISE,   KC_RALT, MACRO,   KC_RGUI, KC_RCTL
 ),
 
 /* Lower
@@ -254,6 +239,7 @@ typedef enum {
 
 os_states os_state = ST_WINDOWS;
 bool is_d_app_active = false;
+bool is_d_app_release = false;
 uint16_t d_app_timer = 0;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -312,10 +298,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 			}
          }
          tap_code(KC_TAB);
-         d_app_timer = 0;
+         //d_app_timer = 0; //bad, always triggers timer_elapsed(d_app_timer) > 1500 
        } else {
-         //if (is_d_app_active) {
+         if (is_d_app_active) {
+         	is_d_app_release = true;
 			d_app_timer = timer_read();
+		}
 		 /*} else {
 			if (os_state == ST_WINDOWS) {
 			unregister_code(KC_LALT);
@@ -667,16 +655,17 @@ uint16_t muse_tempo = 50;
 }*/
 
 void matrix_scan_user(void) {
-	if (is_d_app_active) {
-		if (timer_elapsed(d_app_timer) > 1500) {
+	if (is_d_app_active &&
+		is_d_app_release &&
+		timer_elapsed(d_app_timer) > 1500) {
 			if (os_state == ST_WINDOWS) {
 				unregister_code(KC_LALT);
 			} else if (os_state == ST_MAC) {
 				unregister_code(KC_LGUI);
 			}
 			is_d_app_active = false;
+			is_d_app_release = false;
 		}
-	}
 #ifdef AUDIO_ENABLE
     if (muse_mode) {
         if (muse_counter == 0) {
